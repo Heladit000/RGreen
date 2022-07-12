@@ -16,7 +16,7 @@
     <p id="humidityText">...</p>
 
     <img id="camera" src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif?20151024034921" />
-    <script src="https://cdn.socket.io/4.5.1/socket.io.esm.min.js" integrity="sha384-7EyYLQZgWBi67fBtVxw60/OWl1kjsfrPFcaU0pp0nAh+i8FD068QogUvg85Ewy1k" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.0/socket.io.min.js"></script>
 
     <script>
 
@@ -29,7 +29,7 @@
 
         console.log(window.location)
 
-        var socket = io.connect("http://localhost:3000");
+        var socket = io.connect("http://192.168.1.1:3000");
 
         socket.on("connect_error", (err) => {
             console.log("a", err)

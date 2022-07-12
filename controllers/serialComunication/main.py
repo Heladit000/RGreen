@@ -1,12 +1,17 @@
+from configparser import ConfigParser
 import serialComunication 
 
 import socketio
 
 sio = socketio.Client()
 
+config = ConfigParser()
+config.read("../config.ini")
+
+host = config.get("SERVER", "host")
+port = config.get("SERVER", "port")
 
 def manageSensorsConnection(data):
-    print(data)
     sio.emit("sensorsData", data)
 
 if __name__ == "__main__":
@@ -20,13 +25,14 @@ if __name__ == "__main__":
     def connect_error(err):
         serialComunication.stopConnection()
         print("SC server connection error")
+        exit()
 
     @sio.event
     def disconnect():
         serialComunication.stopConnection()
         print("SC server connection error")
 
-    sio.connect("http://localhost:3000")
+    sio.connect(f"http://{host}:{port}")
 
 
 

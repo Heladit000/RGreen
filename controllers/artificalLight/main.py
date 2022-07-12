@@ -8,8 +8,8 @@ sio = socketio.Client()
 config = configparser.ConfigParser()
 config.read("../config.ini")
 
-sio_host = config.get("WS", "host")
-sio_port = config.get("WS", "port")
+sio_host = config.get("SERVER", "host")
+sio_port = config.get("SERVER", "port")
 sio_event = "actuators/artificialLight"
 #-------------------------
 
@@ -22,6 +22,7 @@ def connect():
 @sio.event
 def connect_error(err):
     print("AL server connection error")
+    exit()
 
 @sio.event
 def disconnect():

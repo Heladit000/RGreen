@@ -8,16 +8,16 @@ import socketio
 config = ConfigParser()
 config.read("../config.ini")
 
-host = config.get("WS", "host")
-port = config.get("WS", "port")
+host = config.get("SERVER", "host")
+port = config.get("SERVER", "port")
 
 sio = socketio.Client()
 
-cameraSleep = 5
+cameraSleep = 60
 connectionState = False
 
 def managePhoto(b64Data):
-    sio.emit("cameraData", b64Data)
+    sio.emit("cameraData/send", b64Data)
 
 def start_take_photos():
     while True:  
@@ -28,20 +28,18 @@ def try_start_connection():
         sio.connect(f"http://{host}:{port}")
     except:
         print("server connection error")
-        sleep(2)
-        try_start_connection()
 
 if __name__ == "__main__":
-
-
     @sio.event
     def connect():
         print("C server connection active")
+        camera.takePhoto(2, managePhoto)
         start_take_photos()
 
     @sio.event
     def connect_error(err):
         print("C server connection error")
+        exit()
 
     @sio.event
     def disconnect():
