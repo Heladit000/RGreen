@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>Oh yeah!</h1>
+    <p id="soilMoistureText">... espera 10 segundos ...</p>
+    <p id="waterLevelText">...</p>
+    <p id="temperatureText">...</p>
+    <p id="humidityText">...</p>
+
+    <img id="camera" src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif?20151024034921" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.0/socket.io.min.js"></script>
+
+    <script>
+
+        const soilMoistureText = document.getElementById("soilMoistureText");
+        const waterLevelText = document.getElementById("waterLevelText");
+        const temperatureText = document.getElementById("temperatureText");
+        const humidityText = document.getElementById("humidityText");
+
+        const camera = document.getElementById("camera");
+
+        console.log(window.location)
+
+        var socket = io.connect("http://192.168.1.1:3000/");
+
+        socket.on("connect_error", (err) => {
+            console.log("a", err)
+        });
+
+        socket.on("sensorsData", (data) => {
+            console.log(data);
+            soilMoistureText.innerHTML = "Humedad de la tierra " + data.data.soilMoisture + "%";
+            waterLevelText.innerHTML = "Nivel de deposito de agua " + data.data.waterLevel + "%";
+            humidityText.innerHTML = "Humedad del ambiente " + data.data.humidity + "%";
+            temperatureText.innerHTML = "Temperatura del ambiente " + data.data.temperature + "C";
+        })
+
+        socket.on("connect", ()=> {
+            console.log("im connected")
+        })
+
+        socket.on("cameraData", (data) => {
+            camera.src = "https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif?20151024034921"
+            console.log(data)
+            setTimeout(() => {
+                camera.src = data;
+            }, 500);
+        })
+    </script>
+</body>
+
+</html>

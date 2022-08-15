@@ -1,3 +1,5 @@
 node_modules
-./server/node_modules
-server/node_modules
+ignoreMe.md
+./ignoreMe.md
+/ignoreMe.md
+
