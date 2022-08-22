@@ -31,6 +31,15 @@ const startDBConnection = async () => {
     try {
         connection = await mariadb.createConnection({ host: "127.0.0.1", user: "root", password: "rgreendb", database: "rgreen" });
         console.log("\x1b[36m database connected! \x1b[0m")
+
+        //retrying connection
+        connection.on("error", async (err) => {
+            console.log("\x1b[41m [ERROR] || cant connect with the database, retrying || \x1b[0m");
+
+            await mountDB(() => {
+                startDBConnection();
+            })
+        })
     } catch (err) {
         console.log("\x1b[41m [ERROR] || cant connect with the database, the data will not saved || \x1b[0m");
         console.log(err);
