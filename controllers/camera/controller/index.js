@@ -1,19 +1,19 @@
-import { StillCamera } from "pi-camera-connect";
+import { StillCamera, Rotation, SensorMode  } from "pi-camera-connect";
 
 import moment from "moment";
 
-import { createCanvas, Image } from "canvas";
+import { createCanvas, Image} from "canvas";
 
 const imageSize = {
-  width: 1920,
-  height: 1080,
+  width: 1296,
+  height: 972,
 }
 
 //create canvas to insert the date in the photo
 const canvas = createCanvas(imageSize.width, imageSize.height);
 const ctx = canvas.getContext("2d");
 
-const RPICamera = new StillCamera(imageSize);
+const RPICamera = new StillCamera({rotation: Rotation.Rotate180, sensorMode: SensorMode.Mode4});
 
 const takePhoto = () => {
   return new Promise((resolve, reject) => {
@@ -31,7 +31,7 @@ const takePhoto = () => {
 
         //draw camera photo
         img.onload = () => {
-          ctx.drawImage(img, 0, 0);
+          ctx.drawImage(img, 0, 0,imageSize.width, imageSize.height);
         };
 
         img.src = result;

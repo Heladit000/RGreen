@@ -10,7 +10,7 @@ import config from "./utils/getConfig.js";
 import figlet from "figlet"
 import { setArtificialLightPeriod } from "./controllers/artificialLight/index.js";
 
-import { startDBConnection, mountDB } from "./database/index.js";
+import { startDBConnection } from "./database/index.js";
 
 
 //--Cool text test--
@@ -41,13 +41,10 @@ app.get("/testdashboard", (req, res) => {
 })
 //-----------------------------s
 
-httpServer.listen(config.SERVER.port, () => {
-    console.log(`Server connection running in http://${(config.SERVER.port_forward ? config.SERVER.public_host : config.SERVER.host)}:${config.SERVER.port}`)
-
-    mountDB(async () => {
+httpServer.listen(config.SERVER.port,async () => {
+        console.log(`Server connection running in http://${(config.SERVER.port_forward ? config.SERVER.public_host : config.SERVER.host)}:${config.SERVER.port}`)
+       
         await startSocketIOConnection(io);
         await startDBConnection();
         await setArtificialLightPeriod(io);
-    });
-
 });

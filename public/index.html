@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+node<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -29,7 +29,7 @@
 
         console.log(window.location)
 
-        var socket = io.connect("http://191.88.223.126:3000/");
+        var socket = io.connect("http://191.88.*.*:3000/");
 
         socket.on("connect_error", (err) => {
             console.log("a", err)

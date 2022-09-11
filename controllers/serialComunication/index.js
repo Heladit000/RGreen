@@ -42,13 +42,14 @@ const handleSensorsData = async (io) => {
             sensors.error = false;
             sensors.data = data;
 
+            console.table(sensors.data)
+
             //emit data
             io.emit(sioEvent, sensors);
         }
 
 
         if (!sensors.error && Object.keys(sensors.data).length !== 0) {
-            //console.table(sensors)
             handleWaterPump(io, sensors.data.soilMoisture);
         }
     });

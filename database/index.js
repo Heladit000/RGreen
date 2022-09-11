@@ -3,42 +3,20 @@ import { nanoid } from "nanoid";
 import moment from "moment";
 import config from "../utils/getConfig.js";
 
-import { exec } from "child_process"
-
 let connection;
-
-const spawnCommand = `sudo mount ${config.RPICONFIG.DATABASE_route} /mnt/usb -o uid=mysql ; sudo systemctl start mariadb`;
-
-const mountDB = (callback) => {
-    exec(spawnCommand, (error, stderr) => {
-        if (stderr) {
-            if (!stderr.includes("already mounted")) {
-                console.log(`\x1b[41m \x1b[37m [ ERROR ] ----> ${stderr} <---- \x1b[0m`);
-            } else {
-                console.log(`\x1b[34m > Database already mounted \x1b[0m`);
-            }
-        } else if (error) {
-            console.log(`\x1b[41m \x1b[37m [ ERROR ] ----> ${error} <---- \x1b[0m`);
-        } else {
-            console.log(`\x1b[34m > Database mounted \x1b[0m`);
-        }
-
-        callback();
-    })
-}
 
 const startDBConnection = async () => {
     try {
         connection = await mariadb.createConnection({ host: "127.0.0.1", user: "root", password: "rgreendb", database: "rgreen" });
         console.log("\x1b[36m database connected! \x1b[0m")
 
+        if(!config.RPICONFIG.allow_save_data){
+            console.log("\x1b[36m allow save data is disabled, the data not going saved \x1b[0m")
+        }
+
         //retrying connection
         connection.on("error", async (err) => {
             console.log("\x1b[41m [ERROR] || cant connect with the database, retrying || \x1b[0m");
-
-            await mountDB(() => {
-                startDBConnection();
-            })
         })
     } catch (err) {
         console.log("\x1b[41m [ERROR] || cant connect with the database, the data will not saved || \x1b[0m");
@@ -79,7 +57,7 @@ const getValuesRangeValuesWithTime = (TABLE, page, limit) => {
 }
 
 const insertValue = (TABLE, name, value) => {
-    if (connection !== undefined) {
+    if (connection !== undefined && config.RPICONFIG.allow_save_data) {
         return new Promise(async (resolve, reject) => {
 
             //default data in all tables
@@ -94,8 +72,10 @@ const insertValue = (TABLE, name, value) => {
             const dataValues = Object.values(dataToInsert).join(",")
 
             try {
-                const query = await connection.query(`INSERT INTO ${TABLE} (${dataKeys},${name}) VALUES (${dataValues}, ?)`, [value])
-                resolve(query)
+                if(config.RPICONFIG.allow_save_data){
+                    const query = await connection.query(`INSERT INTO ${TABLE} (${dataKeys},${name}) VALUES (${dataValues}, ?)`, [value])
+                    resolve(query)
+                }
             }
             catch (err) {
                 reject(err)
@@ -112,17 +92,20 @@ const insertValues = (TABLE, data) => {
             const dataToInsert = {
                 ...data,
                 id: `"${nanoid()}"`,
-                date: `"${moment()}"`,
+                date: `"${moment().format()}"`,
                 plantName: `"${config.PLANT.name}"`
             }
 
             //convert json data to string to MariaDB syntax
             const dataKeys = Object.keys(dataToInsert).join(",")
             const dataValues = Object.values(dataToInsert).join(",")
-
+            
+            
             try {
-                const query = await connection.query(`INSERT INTO ${TABLE} (${dataKeys}) VALUES (${dataValues})`)
-                resolve(query)
+                if(config.RPICONFIG.allow_save_data){
+                    const query = await connection.query(`INSERT INTO ${TABLE} (${dataKeys}) VALUES (${dataValues})`)
+                    resolve(query)
+                } 
             }
             catch (err) {
                 reject(err)
@@ -131,4 +114,4 @@ const insertValues = (TABLE, data) => {
     }
 }
 
-export { startDBConnection, mountDB, getValuesRangeValuesWithTime, getValueWithID, insertValue, insertValues }
+export { startDBConnection, getValuesRangeValuesWithTime, getValueWithID, insertValue, insertValues }

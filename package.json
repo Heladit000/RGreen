@@ -3,6 +3,7 @@
   "dependencies": {
     "@serialport/parser-readline": "^10.3.0",
     "canvas": "^2.9.3",
+    "check-disk-space": "^3.3.1",
     "cors": "^2.8.5",
     "cron": "^2.0.0",
     "express": "^4.18.1",
@@ -14,17 +15,19 @@
     "nanoid": "^4.0.0",
     "npm": "^8.13.2",
     "onoff": "^6.0.3",
+    "pi-camera": "^1.7.0",
     "pi-camera-connect": "^0.3.4",
     "serialport": "^10.4.0",
     "socket.io": "^4.5.1",
-    "socket.io-client": "^4.5.1"
+    "socket.io-client": "^4.5.1",
+    "usb": "^2.5.0"
   },
   "name": "rgreen-server",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Central server of rgreen to control the plant!",
   "main": "index.js",
   "scripts": {
-	"start": "node index.js"
+    "start": "node index.js"
   },
   "author": "heladit000",
   "license": "MIT"

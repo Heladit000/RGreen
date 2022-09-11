@@ -9,8 +9,8 @@ const startSocketIOConnection = (io) => {
     handleCameraData(io);
 
     io.on("connection", (socket) => {
-        getLastPhoto(socket);
-        getLastSensorsData(socket);
+        getLastPhoto(io);
+        getLastSensorsData(io);
     })
 }
 

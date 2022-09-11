@@ -11,7 +11,7 @@ const turnOn = () => {
     //turn on quick
     setTimeout(() => {
         turnOff();
-    }, 2000);
+    }, 5000);
 }
 
 const turnOff = () => {
