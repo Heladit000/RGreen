@@ -8,7 +8,6 @@ import router from "./api/index.js";
 import startSocketIOConnection from "./websockets/index.js";
 import config from "./utils/getConfig.js";
 import figlet from "figlet"
-import { setArtificialLightPeriod } from "./controllers/artificialLight/index.js";
 
 import { startDBConnection } from "./database/index.js";
 
@@ -46,5 +45,4 @@ httpServer.listen(config.SERVER.port,async () => {
        
         await startSocketIOConnection(io);
         await startDBConnection();
-        await setArtificialLightPeriod(io);
 });

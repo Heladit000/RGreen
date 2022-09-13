@@ -24,19 +24,22 @@ const setArtificialLightPeriod = (io) => {
         artificialLight.turnOff();
         console.log("\x1b[35m > night period ☽\x1b[0m" + moment().format());
         lightState = false;
+
+        io.emit("actuators/artificialLight", lightState);
     }
     else if (actualHour.isBefore(startHour)) {
         artificialLight.turnOff();
         console.log("\x1b[35m > night period ☽\x1b[0m" + moment().format());
         lightState = false;
+
+        io.emit("actuators/artificialLight", lightState);
     }
     else {
         artificialLight.turnOn();
         console.log("\x1b[33m > light period ☼\x1b[0m" + moment().format());
         lightState = true;
 
-        //save one photo every day
-            //saveCameraData();
+        io.emit("actuators/artificialLight", lightState);
     }
 
 
@@ -55,6 +58,9 @@ const turnOnArtificialLightJob = new CronJob(`0 ${startHour.hour()} * * *`, () =
     console.log("\x1b[33m > light period ☼\x1b[0m" + moment().format())
     lightState = true;
     lightCronState = true;
+
+    io.emit("actuators/artificialLight", lightState);
+
 })
 
 const turnOffArtificialLightJob = new CronJob(`0 ${endHour.hour()} * * *`, () => {
@@ -64,8 +70,15 @@ const turnOffArtificialLightJob = new CronJob(`0 ${endHour.hour()} * * *`, () =>
     lightCronState = false;
 
     artificialLight.turnOff();
+
+    io.emit("actuators/artificialLight", lightState);
+
 })
 
-const getLightState = () => {return {lightState,lightCronState}};
+const getLightState = () => { return { lightState, lightCronState } };
 
-export {setArtificialLightPeriod, getLightState};
+const getLastLightPeriod = (io) => {
+    io.emit("actuators/artificialLight", lightState);
+}
+
+export { setArtificialLightPeriod, getLightState, getLastLightPeriod };
