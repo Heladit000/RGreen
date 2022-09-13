@@ -1,0 +1,15 @@
+@import "@styles/responsive.scss";
+
+.photos {
+  display: grid;
+
+  gap: 2em;
+
+  margin-top: 10em;
+  justify-content: center;
+  justify-items: center;
+
+  @include desktop {
+    grid-template-columns: repeat(4, 23%);
+  }
+}

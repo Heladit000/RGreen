@@ -1,0 +1,51 @@
+@import "@styles/responsive.scss";
+
+.livePhotos-container {
+  width: 100%;
+  display: grid;
+  justify-items: center;
+
+  .livePhotos {
+    display: grid;
+
+    grid-template-columns: 100%;
+    width: 90%;
+    margin: 2em 0;
+    justify-content: center;
+
+    @include desktop {
+      width: 45em;
+      margin-top: 2em;
+      grid-template-columns: 20% 80%;
+    }
+
+    .livePhotos-oldPreviews {
+      display: grid;
+      height: 100%;
+      gap: 0.2em;
+
+      grid-template-columns: repeat(4, 24%);
+      justify-content: center;
+
+      @include desktop {
+        grid-template-columns: 1fr;
+        justify-content: center;
+      }
+
+      img {
+        width: 100%;
+
+        @include desktop {
+          width: 90%;
+        }
+      }
+    }
+
+    .livePhotos__livePreview {
+      color: #000;
+      img {
+        width: 100%;
+      }
+    }
+  }
+}

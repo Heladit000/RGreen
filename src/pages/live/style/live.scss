@@ -1,0 +1,11 @@
+@import "@styles/responsive.scss";
+
+.live-extraInfo {
+  display: grid;
+  justify-items: center;
+  align-items: center;
+
+  @include desktop {
+    grid-template-columns: 60% 40%;
+  }
+}

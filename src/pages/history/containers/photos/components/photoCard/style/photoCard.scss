@@ -1,0 +1,45 @@
+@import "@styles/responsive.scss";
+
+.photoCard {
+  width: 90%;
+  transition: 0.4s;
+
+  @include desktop {
+    width: 100%;
+  }
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &:active {
+    cursor: pointer;
+    position: fixed;
+    top: 0;
+
+    height: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: #000000bd;
+
+    img {
+      width: 98%;
+      height: auto;
+
+      @include desktop {
+        width: 60%;
+      }
+    }
+  }
+
+  img {
+    user-select: none;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+}
