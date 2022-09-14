@@ -92,7 +92,6 @@ const HisoryChart = () => {
     <div>
       {load && (
         <div>
-          <h1>History</h1>
           <PlantChart
             categories={sensorsData.date}
             colors={["#71EA50", "#EA5050", "#DA50EA"]}

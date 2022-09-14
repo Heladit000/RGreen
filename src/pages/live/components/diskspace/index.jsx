@@ -4,6 +4,8 @@ import ReactApexChart from "react-apexcharts";
 import config from "@config";
 import axios from "axios";
 
+import "./style/diskspace.scss"
+
 const DiskSpace = () => {
   const [load, setLoad] = useState(false);
   const [diskspaceData, setDiskspaceData] = useState({});
@@ -15,44 +17,49 @@ const DiskSpace = () => {
     });
   }, []);
 
-  const changeToGB = number => Math.ceil(number / 1000000000);
+  const changeToGB = (number) => Math.ceil(number / 1000000000);
 
   return (
     load && (
-      <ReactApexChart
-        height="70%"
-        width="100%"
-        options={{
-          chart: {
-            type: "radialBar",
-            width: 100,
-          },
-          plotOptions: {
-            radialBar: {
-              hollow: {
-                margin: 0,
-                size: "75%",
-                background: "#000000",
+      <div className="diskSpace-container">
+        <ReactApexChart
+          width="100%"
+          height="100%"
+          options={{
+            responsive: [
+              {
+                breakpoint: 600,
+                options: {},
               },
-              track: {
-                background: "#38F895"
+            ],
+            plotOptions: {
+              radialBar: {
+                hollow: {
+                  margin: 0,
+                  size: "80%",
+                },
+                track: {
+                  background: "#38F895",
+                },
               },
             },
-          },
-          fill: {
-            colors: "#F0492B"
-          },
-          stroke: {
-            lineCap: "round",
-          },
-          colors: ["#44AA72"],
-          labels: [
-            `${changeToGB(diskspaceData.free)}G / ${changeToGB(diskspaceData.size)}G of space in the disk`,
-          ],
-        }}
-        type="radialBar"
-        series={[Math.ceil((diskspaceData.free * 100) / diskspaceData.size)]}
-      />
+            fill: {
+              colors: "#082316",
+            },
+            stroke: {
+              lineCap: "round",
+            },
+            colors: ["#44AA72"],
+            labels: [
+              `${changeToGB(diskspaceData.free)}G / ${changeToGB(
+                diskspaceData.size
+              )}G of space in the disk`,
+            ],
+          }}
+          type="radialBar"
+          series={[Math.ceil((diskspaceData.free * 100) / diskspaceData.size)]}
+        />
+      </div>
     )
   );
 };

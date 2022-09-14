@@ -5,6 +5,8 @@
   justify-items: center;
   align-items: center;
 
+  width: 100%;
+  
   @include desktop {
     grid-template-columns: 60% 40%;
   }
