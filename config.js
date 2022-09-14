@@ -1,6 +1,6 @@
 const config = {
     server: {
-        host: "http://191.88.223.126:3000",
+        host: "http://191.88.*.*:3000",
     }
 }
 
