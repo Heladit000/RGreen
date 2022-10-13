@@ -1,11 +1,20 @@
 @import "@styles/responsive.scss";
 
+.photos__title {
+  text-align: center;
+  margin: 4em 1em 1em 1em;
+  padding-top: 1em;
+  border-top: 4px dashed #218d2f;
+
+
+}
+
 .photos {
   display: grid;
 
   gap: 2em;
 
-  margin-top: 10em;
+
   justify-content: center;
   justify-items: center;
 

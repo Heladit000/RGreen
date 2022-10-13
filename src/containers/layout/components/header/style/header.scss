@@ -42,9 +42,8 @@ header {
     padding: 4.5em 0;
     width: 100%;
     display: flex;
-    justify-content: space-between;
     height: 10em;
-    font-size: 0.6em;
+    font-size: 1em;
 
     position: absolute;
     top: 0;
@@ -52,25 +51,17 @@ header {
 
     .header-light__time {
       margin-left: 1.2em;
-      opacity: 50%;
       margin-top: 1.5em;
     }
 
     .header-light__plantName {
-      margin-right: 2em;
-      margin-top: 2em;
-
-      font-size: 250%;
-      opacity: 50%;
-
-      @include desktop {
-        margin-right: 5em;
-        margin-top: 0.5em;
-      }
+      margin-left: 1.2em;
+      margin-top: 1.5em;
+      color: #6fff76;
     }
 
     @include desktop {
-      font-size: 100%;
+      font-size: 1.2em;
       padding: 2.2em 0;
     }
   }
@@ -79,7 +70,7 @@ header {
     background: linear-gradient(180deg, #ff00d4ab 0, #00d4ff00 100%);
     animation: entryAnimation 1s;
     .header-light__time {
-      color: #ff0062;
+      color: #fd34b0;
     }
   }
 

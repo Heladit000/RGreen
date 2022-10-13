@@ -3,7 +3,8 @@ import moment from "moment";
 import config from "@config";
 
 import io from "socket.io-client";
-import PlantChart from "../../../../components/plantChart";
+
+import ReactApexChart from "react-apexcharts";
 
 const socket = io(config.server.host);
 
@@ -16,6 +17,16 @@ const LiveChart = () => {
     humidity: [],
     date: [],
     wateringTime: [],
+  });
+
+
+  const [chartConfig, setChartConfig] = useState({
+    formatter: (value, timestamp) => {
+      return moment(timestamp).fromNow();
+    },
+    multipleCharts: {
+      colors: ["#71EA50", "#EA5050", "#DA50EA"],
+    },
   });
 
   useEffect(() => {
@@ -101,34 +112,44 @@ const LiveChart = () => {
   }, []);
   return (
     <div>
-      <PlantChart
-        categories={sensorsData.date}
-        annotations={{
-          points: sensorsData.wateringTime,
-        }}
-        Xaxis={{
-          labels: {
-            format: "HH:mm:ss",
-            datetimeUTC: false,
-          },
-        }}
-        colors={["#71EA50", "#EA5050", "#DA50EA"]}
-        series={[
-          {
-            name: "soilMoisture",
 
-            data: sensorsData.soilMoisture,
-          },
-          { name: "temperature", data: sensorsData.temperature },
-          { name: "humidity", data: sensorsData.humidity },
-        ]}
-        tooltip={{
-          followCursor: true,
-          x: {
-            format: "dd/MM/yyyy HH:mm:ss",
-          },
-        }}
-      />
+      <ReactApexChart
+              series={[
+                {
+                  name: "soilMoisture",
+                  data: sensorsData.soilMoisture,
+                },
+                { name: "temperature", data: sensorsData.temperature },
+                { name: "humidity", data: sensorsData.humidity },
+              ]}
+              type="line"
+              width="98%"
+              height={300}
+              options={{
+                colors: chartConfig.multipleCharts.colors,
+                chart: {
+                  id: "all",
+                  group: "plant",
+                  height: 300,
+                  type: "line",
+                },
+                annotations: {
+                  points: sensorsData.wateringTime,
+                },
+                tooltip: {
+                  x: {
+                    format: "dd/MM/yyyy hh:mm",
+                  },
+                },
+                xaxis: {
+                  type: "datetime",
+                  categories: sensorsData.date,
+                  labels: {
+                    datetimeUTC: false,
+                  },
+                },
+              }}
+            />
     </div>
   );
 };

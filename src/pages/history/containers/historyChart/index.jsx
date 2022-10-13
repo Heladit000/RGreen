@@ -1,20 +1,34 @@
 import React, { useEffect, useState } from "react";
 import config from "@config";
 import axios from "axios";
-import PlantChart from "../../../../components/plantChart";
 
 import moment from "moment";
+import ReactApexChart from "react-apexcharts";
 
-const HisoryChart = () => {
+import "./style/historyChart.scss";
+
+const HistoryChart = () => {
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(1000);
 
   const [sensorsData, setSensorsData] = useState({
-    soilMoisture: [],
-    temperature: [],
-    humidity: [],
     date: [],
     wateringTime: [],
+    soilMoisture: [],
+    mixed: {
+      soilMoisture: [],
+      temperature: [],
+      humidity: [],
+    },
+  });
+
+  const [chartConfig, setChartConfig] = useState({
+    formatter: (value, timestamp) => {
+      return moment(timestamp).fromNow();
+    },
+    multipleCharts: {
+      colors: ["#71EA50", "#EA5050", "#DA50EA"],
+    },
   });
 
   const [wateringTimes, setWateringTimes] = useState([]);
@@ -30,57 +44,76 @@ const HisoryChart = () => {
           const sensorsDataFormatted = sensorsData;
 
           data.data.body.reverse().map((dataSensor) => {
+            const date = moment(dataSensor.date).valueOf();
+
             sensorsDataFormatted.soilMoisture.push(dataSensor.soilMoisture);
-            sensorsDataFormatted.temperature.push(dataSensor.temperature);
-            sensorsDataFormatted.humidity.push(dataSensor.humidity);
-            sensorsDataFormatted.date.push(moment(dataSensor.date).valueOf());
-            sensorsDataFormatted.wateringTime.push(dataSensor.wateringTime);
+
+            sensorsDataFormatted.mixed.soilMoisture.push([
+              date,
+              dataSensor.soilMoisture,
+            ]);
+
+            sensorsDataFormatted.mixed.temperature.push([
+              date,
+              dataSensor.temperature,
+            ]);
+
+            sensorsDataFormatted.mixed.humidity.push([
+              date,
+              dataSensor.humidity,
+            ]);
           });
 
+          return sensorsDataFormatted;
         }),
       axios
         .get(`${config.server.host}/wateringTimes/${page}?limit=${limit}`)
-        .then((dataW) => {
-          const wateringTimesFormatted = dataW.data.body
+        .then((dataWater) => {
+          const wateringTimesFormatted = dataWater.data.body
             .reverse()
-            .map((dataW) => {
+            .map((dataWater) => {
               return {
-                x: moment(dataW.date).valueOf(),
-                borderColor: "#00E396",
+                x: moment(dataWater.date).valueOf(),
+                borderColor: "#00E3973B",
                 label: {
-                  borderColor: "#00E396",
+                  borderColor: "#00E3973B",
                   style: {
                     color: "#fff",
-                    background: "#00E396",
+                    background: "#00E3973B",
                   },
                   orientation: "horizontal",
-                  text: `${dataW.times} Times`,
+                  text: `${dataWater.times} Times`,
                 },
               };
             });
 
-          setWateringTimes(wateringTimesFormatted);
-
-          setLoad(true);
+          return wateringTimesFormatted;
         }),
-      axios.get(`${config.server.host}/config`).then((dataC) => {
-        setMinSoilMoisture([
-          {
-            y: dataC.data.body.PLANT.min_soil_moisture,
-            y2: 0,
-            fillColor: "#ff7b0062",
-            label: {
-              text: "latest min soil moisture",
-              style: {
-                background:  "#ffa60080"
-              }
+      axios.get(`${config.server.host}/config`).then((dataConfig) => {
+        return dataConfig;
+      }),
+    ]).then((results) => {
+      setSensorsData(results[0]);
+      setWateringTimes(results[1]);
+
+      setMinSoilMoisture([
+        {
+          y: results[2].data.body.PLANT.min_soil_moisture,
+          y2: Math.min.apply(null, sensorsData.soilMoisture),
+          fillColor: "#ff7b0062",
+          label: {
+            text: "latest min soil moisture",
+            offsetY: 20,
+            borderWidth: 0,
+            style: {
+              background: "#ffa60080",
             },
           },
-        ]);
+        },
+      ]);
 
-        setLoad(true);
-      }),
-    ]);
+      setLoad(true);
+    });
   };
 
   useEffect(() => {
@@ -89,47 +122,178 @@ const HisoryChart = () => {
   }, []);
 
   return (
-    <div>
+    <div className="historyChart">
       {load && (
         <div>
-          <PlantChart
-            categories={sensorsData.date}
-            colors={["#71EA50", "#EA5050", "#DA50EA"]}
-            Xaxis={{
-              labels: {
-                datetimeUTC: false,
-                formatter: (value, timestamp) => {
-                  return moment(timestamp).fromNow();
-                },
-              },
-            }}
-            annotations={{
-              xaxis: wateringTimes,
-              yaxis: minSoilMoisture,
-            }}
-            tooltip={{
-              followCursor: true,
-              x: {
-                format: "dd/MM/yyyy hh:mm",
-                formatter: (value, timestamp) => {
-                  return moment(value).format("DD/MM/YYYY hh:mm");
-                },
-              },
-            }}
-            series={[
-              {
-                name: "soilMoisture",
+          <div>
+            <h3>Mixed chart</h3>
+            <ReactApexChart
+              series={[
+                {
+                  name: "soilMoisture",
 
-                data: sensorsData.soilMoisture,
-              },
-              { name: "temperature", data: sensorsData.temperature },
-              { name: "humidity", data: sensorsData.humidity },
-            ]}
-          />
+                  data: sensorsData.mixed.soilMoisture,
+                },
+                { name: "temperature", data: sensorsData.mixed.temperature },
+                { name: "humidity", data: sensorsData.mixed.humidity },
+              ]}
+              type="line"
+              width="98%"
+              height={300}
+              options={{
+                colors: chartConfig.multipleCharts.colors,
+                chart: {
+                  id: "all",
+                  group: "plant",
+                  height: 300,
+                  type: "line",
+                },
+                annotations: {
+                  xaxis: wateringTimes,
+                  yaxis: minSoilMoisture,
+                },
+                tooltip: {
+                  x: {
+                    format: "dd/MM/yyyy hh:mm",
+                    formatter: (value, timestamp) => {
+                      return moment(value).format("DD/MM/YYYY hh:mm");
+                    },
+                  },
+                },
+                xaxis: {
+                  type: "datetime",
+                  categories: sensorsData.date,
+                  labels: {
+                    datetimeUTC: false,
+                    formatter: chartConfig.formatter,
+                  },
+                },
+              }}
+            />
+          </div>
+
+          {/* Multiple Charts */}
+          <div>
+            <h3>Individual charts</h3>
+
+            <ReactApexChart
+              series={[
+                {
+                  name: "soil moisture",
+                  data: sensorsData.mixed.soilMoisture,
+                },
+              ]}
+              type="line"
+              height={200}
+              width="98%"
+              options={{
+                colors: [chartConfig.multipleCharts.colors[0]],
+                chart: {
+                  id: "soilmoisture",
+                  group: "plant",
+                  height: 200,
+                  type: "line",
+                },
+                annotations: {
+                  xaxis: wateringTimes,
+                  yaxis: minSoilMoisture,
+                },
+                tooltip: {
+                  x: {
+                    format: "dd/MM/yyyy hh:mm",
+                    formatter: (value, timestamp) => {
+                      return moment(value).format("DD/MM/YYYY hh:mm");
+                    },
+                  },
+                },
+                xaxis: {
+                  type: "datetime",
+                  categories: sensorsData.date,
+                  labels: {
+                    datetimeUTC: false,
+                    formatter: chartConfig.formatter,
+                  },
+                },
+              }}
+            />
+            <ReactApexChart
+              series={[
+                {
+                  name: "temperature",
+                  data: sensorsData.mixed.temperature,
+                },
+              ]}
+              type="line"
+              width="98%"
+              height={200}
+              options={{
+                colors: [chartConfig.multipleCharts.colors[1]],
+                chart: {
+                  id: "temperature",
+                  group: "plant",
+                  height: 200,
+                  type: "line",
+                },
+                tooltip: {
+                  x: {
+                    format: "dd/MM/yyyy hh:mm",
+                    formatter: (value, timestamp) => {
+                      return moment(value).format("DD/MM/YYYY hh:mm");
+                    },
+                  },
+                },
+                xaxis: {
+                  type: "datetime",
+                  categories: sensorsData.date,
+                  labels: {
+                    datetimeUTC: false,
+                    formatter: chartConfig.formatter,
+                  },
+                },
+              }}
+            />
+
+            <ReactApexChart
+              series={[
+                {
+                  name: "humidity",
+                  data: sensorsData.mixed.humidity,
+                },
+              ]}
+              width="98%"
+              type="line"
+              height={200}
+              options={{
+                colors: [chartConfig.multipleCharts.colors[2]],
+                chart: {
+                  id: "temperature",
+                  group: "plant",
+                  height: 200,
+                  type: "line",
+                },
+                tooltip: {
+                  x: {
+                    format: "dd/MM/yyyy hh:mm",
+                    formatter: (value, timestamp) => {
+                      return moment(value).format("DD/MM/YYYY hh:mm");
+                    },
+                  },
+                },
+                xaxis: {
+                  type: "datetime",
+                  categories: sensorsData.date,
+                  labels: {
+                    datetimeUTC: false,
+                    formatter: chartConfig.formatter,
+                  },
+                },
+              }}
+            />
+          </div>
         </div>
       )}
     </div>
   );
 };
 
-export default HisoryChart;
+export default HistoryChart;
