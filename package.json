@@ -1,12 +1,13 @@
 {
     "name": "rgreen-dashboard",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "",
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "webpack serve --config webpack.config.dev.js",
-        "build": "webpack serve --config webpack.config.js"
+        "build": "webpack --config webpack.config.js",
+        "pm2Serve": "serve ./dist/index.html 8080 --name dashboard"
     },
     "keywords": [],
     "author": "heladit000",
@@ -43,6 +44,7 @@
     },
     "dependencies": {
         "apexcharts": "^3.35.3",
+        "dotenv-webpack": "^8.0.1",
         "react": "^17.0.2",
         "react-apexcharts": "^1.4.0",
         "react-dom": "^17.0.2",

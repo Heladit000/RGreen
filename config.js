@@ -1,6 +1,9 @@
+
+
 const config = {
     server: {
-        host: "http://191.88.223.126:3000",
+        //Raspberry pi server host and port Example: "http://191.88.223.126:3000"
+        host: process.env.REACT_APP_HOST,
     }
 }
 

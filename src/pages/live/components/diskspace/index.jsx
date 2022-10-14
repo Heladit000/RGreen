@@ -24,14 +24,11 @@ const DiskSpace = () => {
       <div className="diskSpace-container">
         <ReactApexChart
           width="100%"
-          height="100%"
           options={{
-            responsive: [
-              {
-                breakpoint: 600,
-                options: {},
-              },
-            ],
+            chart: {
+              width: "100%",
+              background: "#00000000"
+            },
             plotOptions: {
               radialBar: {
                 hollow: {

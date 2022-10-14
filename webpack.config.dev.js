@@ -5,6 +5,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CleanTerminalPlugin = require("clean-terminal-webpack-plugin");
 const WebpackMessages = require("webpack-messages");
+const Dotenv = require("dotenv-webpack");
 
 const port = 3005;
 
@@ -60,6 +61,7 @@ module.exports = {
     ],
   },
   plugins: [
+    new Dotenv(),
     new CleanTerminalPlugin(),
     new HtmlWebpackPlugin({
       template: "./public/index.html",

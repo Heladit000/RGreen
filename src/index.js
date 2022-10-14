@@ -6,6 +6,7 @@ import App from "./routes/App";
 window.Apex = {
     chart: {
         foreColor: "#44AA72",
+        background: "#000000"
     },
     grid: {
         show: true,

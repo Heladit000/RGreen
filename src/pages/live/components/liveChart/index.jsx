@@ -4,6 +4,8 @@ import config from "@config";
 
 import io from "socket.io-client";
 
+import "./style/live.scss";
+
 import ReactApexChart from "react-apexcharts";
 
 const socket = io(config.server.host);
@@ -111,7 +113,7 @@ const LiveChart = () => {
     };
   }, []);
   return (
-    <div>
+    <div className="live">
 
       <ReactApexChart
               series={[
@@ -131,6 +133,7 @@ const LiveChart = () => {
                   id: "all",
                   group: "plant",
                   height: 300,
+                  width: "98%",
                   type: "line",
                 },
                 annotations: {
