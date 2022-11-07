@@ -6,7 +6,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 
 import { io } from "socket.io-client";
-import moment, { isMoment } from "moment";
+import moment from "moment";
 
 const socket = io(config.server.host);
 

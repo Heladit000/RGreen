@@ -8,7 +8,26 @@ body {
   h3,
   h4,
   h5,
-  h6 {
+  h6,
+  p {
     color: white;
+  }
+
+  button {
+    cursor: pointer;
+    background: #153535;
+    border: solid 2px #076464;
+    border-radius: 4px;
+
+    color: #0ca565;
+    padding: 1em;
+    font-size: 100%;
+
+    &:disabled {
+      background: #071313;
+      border: 0;
+      color: #085334;
+      cursor: wait;
+    }
   }
 }

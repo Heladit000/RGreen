@@ -1,6 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+
 import PhotoCard from "./components/photoCard";
+import PlantGif from "./components/plantGif";
 
 import "./style/photos.scss";
 
@@ -26,6 +28,7 @@ const Photos = () => {
   
 
   const getData = () => {
+    
     axios
       .get(`${config.server.host}/photos/${page}?limit=${limit}`)
       .then((data) => {
@@ -37,11 +40,13 @@ const Photos = () => {
           setMoreDataLoaded(false);
         }
       });
+
   };
 
   return (
     <section>
       {imagesData.length > 0 && <h1 className="photos__title">Photos</h1>}
+      <PlantGif photos={imagesData}/>
       <InfiniteScroll
         dataLength={imagesData}
         next={getData}

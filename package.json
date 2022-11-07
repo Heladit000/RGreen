@@ -22,14 +22,15 @@
         "clean-terminal-webpack-plugin": "^3.0.0",
         "copy-webpack-plugin": "^10.2.0",
         "css-loader": "^6.5.1",
+        "gifshot": "^0.4.5",
         "html-loader": "^3.0.1",
         "html-webpack-plugin": "^5.5.0",
+        "image-size": "^1.0.2",
         "ip": "^1.1.8",
         "is-email": "^1.0.2",
         "mini-css-extract-plugin": "^2.4.5",
         "moment": "^2.29.4",
         "react-content-loader": "^6.1.0",
-        "react-dropzone": "^11.4.2",
         "react-infinite-scroll-component": "^6.1.0",
         "react-responsive": "^9.0.0-beta.5",
         "react-router-dom": "^6.3.0",
@@ -48,7 +49,6 @@
         "react": "^17.0.2",
         "react-apexcharts": "^1.4.0",
         "react-dom": "^17.0.2",
-        "socket.io-client": "^4.5.1",
-        "victory": "^36.5.3"
+        "socket.io-client": "^4.5.1"
     }
 }
